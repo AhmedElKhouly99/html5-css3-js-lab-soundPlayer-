@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 3</title>
+    <style>
+        body{
+            background-color: rgb(173, 252, 255);
+        }
+        audio{
+            display: block;
+            margin: auto;
+            padding: 5%;
+        }
+        section{
+            padding: 1%;
+            border-radius: 8px;
+        }
+        section div{
+            cursor: pointer;
+            margin: 3% 3%;
+            padding: 1%;
+            background-color: cadetblue;
+            border-radius: 8px;
+        }
+        section div:hover{
+            box-shadow: 0 0 10px 0 red;
+        }
+        button{
+            text-align: center;
+            margin: 3%;
+            padding: 2%;
+            border-radius: 8px;
+        }
+        #shuffle, #repeat, input{
+            margin: 2% 9.5%;
+        }
+        #container{
+            width: 70%;
+            margin: 5% auto;
+            overflow: hidden;
+            background-color: skyblue;
+            align-items: center;
+            border-radius: 10px;
+            padding-bottom: 5%;
+        }
+        section{
+            background-color: silver;
+            width: 60%;
+            margin: auto;
+        }
+        .delete{
+            background-color: red;
+            color: white;
+            margin: 0 15%;
+        }
+        .play{
+            background-color: green;
+            color: white;
+            margin: 0 15%;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="container">
+
+        <audio id="audio" src="mp3/109.mp3" controls autoplay></audio>
+        
+        <button id="shuffle" onclick="shuffle();">Shuffle</button>
+        <button id="repeat" onclick="repeat();">Repeat</button>
+            <input type="file" id="myfile" name="filename" >
+        <section id="list" style="display: block;">
+
+        </section>
+    </div>
+    
+    <script>
+        const audio = document.getElementById('audio');
+        const shufflebtn = document.getElementById('shuffle');
+        const repeatbtn = document.getElementById('repeat');
+        const playbtn = document.getElementById('play');
+        const playlist = document.getElementById('list');
+        let index = 0;
+        let flag = true;
+        let list = ["mp3/109.mp3", "mp3/110.mp3","mp3/111.mp3"];
+        var file = document.getElementById('myfile');
+
+
+        function makeList(){
+            playlist.innerHTML = "";
+            for(let i = 0; i < list.length; i++){
+                playlist.innerHTML += `<div id="${i}">${list[i]}<button class="delete" onClick="deletebtn(this.parentNode.id);">Delete</button>
+                    <button class="play" onClick="mp3Play(this.parentNode.id);">Play</button></div>`
+            }
+        }
+        function deletebtn(i){
+            audio.pause();
+            list.splice(parseInt(i), 1);
+            makeList();
+        }
+        function mp3Play(i){
+            audio.setAttribute('src', list[parseInt(i)])
+            index = parseInt(i);
+            audio.play();
+        }
+        function repeat(){
+            if(flag){
+                audio.setAttribute('loop','loop')
+                flag = false;
+            }else{
+                audio.removeAttribute('loop');
+                flag = true;
+            }
+        }
+        function shuffle(){
+            let rand = Math.floor(Math.random() * list.length);
+            index = rand;
+            mp3Play(rand);
+        }
+        audio.addEventListener('ended', ()=>{
+            index ++;
+           if(index == list.length){
+               index = 0;
+           }
+            mp3Play(index);
+           
+        })
+        file.addEventListener('change', (e)=>{
+            var f = e.target.files[0].name;
+            list.push(f);
+            makeList();
+        })
+        makeList();
+        audio.play()
+    </script>
+</body>
+</html>
